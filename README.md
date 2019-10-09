@@ -12,12 +12,12 @@ Installation
 Die Anwendung ist in Elm geschrieben, zur Kompilierung muss `elm` auf dem System verfügbar sein.
 Installation von `elm`:
 ```sh
-npm install elm
+npm install -g elm
 ```
 Repository clonen und Anwendung kompilieren:
 ```sh
-git clone http://github.com/bubens/losungschecker.git
-cd losungschecker
+git clone https://github.com/bubens/L-sungschecker.git
+cd L-sungschecker
 elm make --optimize src/Main.elm
 ```
 Im Verzeichnis erscheint eine `index.html`-Datei. Diese kann unter beachtung der Lizenzbedingungen auf dem eigenen Webspace/Server angeboten werden.
