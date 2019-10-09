@@ -72,7 +72,9 @@ type State
 
 
 type alias Model =
-    State
+    { url : Url.Url
+    , state : State
+    }
 
 
 
@@ -83,11 +85,15 @@ init : flags -> Url.Url -> Navigation.Key -> ( Model, Cmd msg )
 init flags url key =
     case url.fragment of
         Just encodedSolution ->
-            Check (decodeText encodedSolution) Nothing
+            { url = url
+            , state = Check (decodeText encodedSolution) Nothing
+            }
                 |> leftOf Cmd.none
 
         Nothing ->
-            Create Nothing
+            { url = url
+            , state = Create Nothing
+            }
                 |> leftOf Cmd.none
 
 
@@ -99,42 +105,49 @@ update : Msg -> Model -> ( Model, Cmd msg )
 update msg model =
     case msg of
         SubmitInput ->
-            case model of
+            case model.state of
                 Create submission ->
                     case submission of
                         Nothing ->
                             ( model, Cmd.none )
 
                         Just str ->
-                            ( Display str, Cmd.none )
+                            { model | state = Display str }
+                                |> leftOf Cmd.none
 
                 _ ->
                     ( model, Cmd.none )
 
         GetInput str ->
-            case model of
+            case model.state of
                 Create solution ->
                     case str of
                         "" ->
-                            ( Create Nothing, Cmd.none )
+                            { model | state = Create Nothing }
+                                |> leftOf Cmd.none
 
                         _ ->
-                            ( Create
-                                (Just (String.map toUpper str))
-                            , Cmd.none
-                            )
+                            let
+                                upperStr =
+                                    String.map toUpper str
+                            in
+                            { model | state = Create (Just upperStr) }
+                                |> leftOf Cmd.none
 
                 Check solution submission ->
                     case str of
                         "" ->
-                            ( Check solution Nothing, Cmd.none )
+                            { model | state = Check solution Nothing }
+                                |> leftOf Cmd.none
 
                         _ ->
-                            ( Check
-                                solution
-                                (Just (String.map toUpper str))
-                            , Cmd.none
-                            )
+                            { model
+                                | state =
+                                    Check
+                                        solution
+                                        (Just (String.map toUpper str))
+                            }
+                                |> leftOf Cmd.none
 
                 _ ->
                     ( model, Cmd.none )
@@ -259,17 +272,19 @@ viewCreator solution =
     }
 
 
-viewDisplay : String -> Document
-viewDisplay solution =
+viewDisplay : Url.Url -> String -> Document
+viewDisplay url solution =
     let
         encodedSolution =
             encodeText solution
 
-        url =
-            "http://192.168.0.8:8000/src/Main.elm#" ++ encodedSolution
+        checkerURL =
+            Url.toString url
+                ++ "#"
+                ++ encodedSolution
 
         qrCode =
-            createQRCode url
+            createQRCode checkerURL
                 |> html
                 |> el
                     [ width shrink
@@ -286,7 +301,7 @@ viewDisplay solution =
                     , Font.monospace
                     ]
                 ]
-                { url = url
+                { url = checkerURL
                 , label = text "Link zum kopieren"
                 }
 
@@ -301,7 +316,7 @@ viewDisplay solution =
                     ]
                 ]
                 { onChange = \s -> Noop
-                , text = url
+                , text = checkerURL
                 , placeholder = Nothing
                 , label =
                     Input.labelAbove
@@ -444,12 +459,12 @@ viewChecker solution submission =
 
 view : Model -> Document
 view model =
-    case model of
+    case model.state of
         Create solution ->
             viewCreator solution
 
         Display solution ->
-            viewDisplay solution
+            viewDisplay model.url solution
 
         Check solution submission ->
             viewChecker solution submission
