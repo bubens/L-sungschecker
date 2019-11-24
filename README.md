@@ -5,7 +5,7 @@ Alle Daten sind in der URL der individuellen Checker kodiert und außer Verkehrs
 
 Anwendung
 ---------
-Lehrende erstellen mit der Webanwendung eine Checkerseite und geben die auf der Folgeseite angezeigte URL (zB. als QR-Code zum scannen) an Schüler_innen* weiter. Rufen die Schüler_innen* die Seite mit der verteilten URL auf, können sie durch Eingabe des Lösungswortes die eigene Lösung überprüfen. Die richtige Lösung wird visuell zurück gemeldet.
+Lehrende erstellen mit der Webanwendung eine Checkerseite und geben die auf der Folgeseite angezeigte URL (zB. als QR-Code zum scannen) an Schüler_innen* weiter. Rufen Schüler_innen* die Seite mit dieser URL auf, können sie durch Eingabe des Lösungswortes die eigene Lösung überprüfen. Die richtige Lösung wird visuell zurück gemeldet.
 
 Installation
 ------------
@@ -20,7 +20,7 @@ git clone https://github.com/bubens/L-sungschecker.git
 cd L-sungschecker
 elm make --optimize src/Main.elm
 ```
-Im Verzeichnis erscheint eine `index.html`-Datei. Diese kann unter beachtung der Lizenzbedingungen auf dem eigenen Webspace/Server angeboten werden.
+Im Verzeichnis erscheint eine `index.html`-Datei. Diese kann unter Beachtung der Lizenzbedingungen auf dem eigenen Webspace/Server angeboten werden.
 
 Todo
 ----
